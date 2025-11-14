@@ -27,15 +27,15 @@
             "state": {
               "type": "canvas",
               "state": {
-                "file": "Ebay/collectibleitemdetails.canvas",
+                "file": "Ebay/digital-collections-architecture.canvas",
                 "viewState": {
-                  "x": -166.46959999999993,
-                  "y": 345.65116,
-                  "zoom": -1.6021717907533795
+                  "x": -288.61775238937037,
+                  "y": -93.5539271138335,
+                  "zoom": -1.572772971039005
                 }
               },
               "icon": "lucide-layout-dashboard",
-              "title": "collectibleitemdetails"
+              "title": "digital-collections-architecture"
             }
           }
         ],
@@ -187,10 +187,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "bcdade4328e8efb8",
+  "active": "b5ccab3b61d8f18d",
   "lastOpenFiles": [
     "Ebay/collectibleitemdetails.canvas",
-    "Ebay/collectibleitemdetails.canvas",
+    "AI/AI Engineering - Guía Completa.md",
+    "Android Notes/jetcaster/ARCHITECTURE.md",
+    "AI",
+    "untitled folder",
+    "AI Engineering - Guía Completa.md",
+    "ai",
+    "Android Notes/jetcaster/architecture-jetcaster.canvas",
     "Ebay/Collectibles Architecture and Best Practices.md",
     "Ebay/digital-collections-architecture.canvas",
     "Ebay/digitalcollection.md",
