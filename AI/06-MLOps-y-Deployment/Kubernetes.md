@@ -1,98 +1,68 @@
-# Kubernetes - Orquestación de Containers
+# Kubernetes - Container Orchestration
 
 ## Descripción
 
-Kubernetes orquesta containers a escala, gestionando deployment, scaling y operaciones de aplicaciones containerizadas. Es el estándar de facto para MLOps en producción.
+Kubernetes (K8s) orquesta containers Docker a escala: auto-scaling, load balancing, self-healing, rolling updates. Essential para ML en producción: manejar múltiples modelos, escalar según demanda, alta disponibilidad. Conceptos: Pods (grupo containers), Deployments (manage replicas), Services (networking), Ingress (routing externo). ML use: model serving con auto-scaling, batch jobs, distributed training. Managed K8s: GKE, EKS, AKS. Helm para package management. Kubeflow para ML workflows. Alternatives: Docker Swarm, Nomad.
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **Arquitectura**
-- Pods
-- Services
-- Deployments
-- ConfigMaps
-- Secrets
+**Pod**: Unidad deployment mínima
+**Deployment**: Manage replicas
+**Service**: Load balancing interno
+**ConfigMap/Secrets**: Configuration
+**HPA**: Horizontal Pod Autoscaling
 
-### 2. **Networking**
-- ClusterIP
-- NodePort
-- LoadBalancer
-- Ingress
+## Ejemplo Deployment
 
-### 3. **Storage**
-- Volumes
-- PersistentVolumes
-- StorageClass
-
-### 4. **ML Workloads**
-- Model serving
-- Batch inference
-- Training jobs
-- Auto-scaling
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
-
-```python
-# Implementación básica
-# Código funcional comentado
-
-# Caso de uso real
-# Mejores prácticas
-
-# Patrón avanzado
-# Optimizaciones
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ml-api
+  template:
+    metadata:
+      labels:
+        app: ml-api
+    spec:
+      containers:
+      - name: api
+        image: ml-api:v1
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-api-service
+spec:
+  selector:
+    app: ml-api
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: LoadBalancer
 ```
 
-## Mejores Prácticas
+## Comandos
 
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
-
-## Proyectos Sugeridos
-
-1. **Deploy modelo ML**
-2. **Auto-scaling setup**
-3. **A/B testing**
-4. **Canary deployment**
-5. **GPU cluster**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
+```bash
+kubectl apply -f deployment.yaml
+kubectl get pods
+kubectl scale deployment ml-api --replicas=5
+kubectl logs <pod-name>
+```
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 3-4 semanas

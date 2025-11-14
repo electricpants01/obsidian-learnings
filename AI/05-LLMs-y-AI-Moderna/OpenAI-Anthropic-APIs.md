@@ -1,99 +1,196 @@
-# APIs de OpenAI y Anthropic
+# OpenAI y Anthropic APIs
 
 ## Descripción
 
-APIs de LLMs comerciales. OpenAI ofrece GPT-4, DALL-E y embeddings. Anthropic proporciona Claude con contexto largo y mayor seguridad.
+OpenAI (GPT-4, GPT-3.5) y Anthropic (Claude) proveen APIs para integrar LLMs state-of-the-art en aplicaciones. Ventajas: no mantener infraestructura, modelos actualizados, escalabilidad automática. OpenAI: GPT-4 (razonamiento superior), GPT-3.5-turbo (rápido/barato), embeddings, Whisper (speech), DALL-E. Claude: context window largo (100K tokens), mejor en tareas analíticas, más seguro. Ambos: chat completions, streaming, function calling, JSON mode. Costos: por tokens (input/output separados). Rate limits críticos. Embeddings para similarity search. Function calling permite tool use. Vision APIs para imágenes. Crítico: prompt engineering, error handling, cost optimization, security (no exponer API keys).
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **OpenAI API**
-- Chat completions
-- Embeddings
-- Assistants
-- Vision
-- Function calling
+### 1. **Chat Completions**
+- Messages format (system, user, assistant)
+- Temperature, top_p para variabilidad
+- max_tokens para límite
+- Stream responses
 
-### 2. **Claude API**
-- Messages API
-- 100K+ context
-- Constitutional AI
-- Streaming
+### 2. **Function Calling**
+- Define tools/functions
+- LLM decide cuándo llamar
+- Structured outputs
+- Multi-step workflows
 
-### 3. **Consideraciones**
-- Pricing
-- Rate limits
-- Context window
+### 3. **Embeddings**
+- text-embedding-ada-002 (OpenAI)
+- Vector representations
+- Similarity search
+- Clustering, classification
+
+### 4. **Context Management**
 - Token counting
+- Truncation strategies
+- Sliding window
+- Summarization for long convs
 
-### 4. **Best Practices**
-- Prompt engineering
-- Error handling
-- Caching
-- Monitoring
+### 5. **Cost Optimization**
+- Cache prompts
+- Use GPT-3.5 cuando posible
+- Batch requests
+- Monitor usage
 
-## Recursos de Aprendizaje
+## Recursos
 
-### Documentación Oficial
-1. Documentación oficial y guías completas
-2. Tutoriales paso a paso
-3. Referencias API y ejemplos
+**Docs**: https://platform.openai.com/docs, https://docs.anthropic.com/
+**Pricing**: https://openai.com/pricing
 
-### Cursos Online
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Tutoriales en video
+## Ejemplos
 
-### Libros y Papers
-1. Literatura fundamental del campo
-2. Casos de estudio reales
-3. Investigación reciente
-
-## Ejemplos Prácticos
+### Ejemplo 1: Chat Completion
 
 ```python
-# Ejemplo de implementación básica
-# Código comentado y funcional
+import openai
 
-# Caso de uso en producción
-# Mejores prácticas aplicadas
+openai.api_key = "your-key"
 
-# Patrón avanzado optimizado
-# Integración con ecosistema
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain quantum computing"}
+    ],
+    temperature=0.7,
+    max_tokens=500
+)
+
+print(response.choices[0].message.content)
+```
+
+### Ejemplo 2: Streaming
+
+```python
+response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": "Write a story"}],
+    stream=True
+)
+
+for chunk in response:
+    if chunk.choices[0].delta.get("content"):
+        print(chunk.choices[0].delta.content, end="")
+```
+
+### Ejemplo 3: Function Calling
+
+```python
+functions = [
+    {
+        "name": "get_weather",
+        "description": "Get current weather",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {"type": "string"},
+                "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+            },
+            "required": ["location"]
+        }
+    }
+]
+
+response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": "What's the weather in Boston?"}],
+    functions=functions,
+    function_call="auto"
+)
+
+if response.choices[0].message.get("function_call"):
+    function_args = json.loads(response.choices[0].message.function_call.arguments)
+    weather = get_weather(**function_args)
+```
+
+### Ejemplo 4: Claude API
+
+```python
+import anthropic
+
+client = anthropic.Anthropic(api_key="your-key")
+
+message = client.messages.create(
+    model="claude-3-opus-20240229",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "Analyze this data..."}
+    ]
+)
+
+print(message.content[0].text)
+```
+
+### Ejemplo 5: Embeddings
+
+```python
+response = openai.Embedding.create(
+    model="text-embedding-ada-002",
+    input="Your text here"
+)
+
+embedding = response['data'][0]['embedding']
+# Use for similarity search
 ```
 
 ## Mejores Prácticas
 
-1. **Estándares**: Seguir convenciones de la industria
-2. **Testing**: Implementar pruebas exhaustivas
-3. **Documentación**: Mantener código bien documentado
-4. **Optimización**: Priorizar rendimiento
-5. **Mantenibilidad**: Código limpio y modular
+```python
+# ✅ Error handling
+from openai.error import RateLimitError, APIError
 
-## Proyectos Sugeridos
+try:
+    response = openai.ChatCompletion.create(...)
+except RateLimitError:
+    # Retry with backoff
+    time.sleep(60)
+except APIError as e:
+    # Log error
+    logger.error(f"API error: {e}")
 
-1. **Chat application**
-2. **Function calling bot**
-3. **Vision analysis**
-4. **Long context RAG**
-5. **Multi-agent system**
+# ✅ Cost tracking
+import tiktoken
 
-## Checklist de Aprendizaje
+def count_tokens(text, model="gpt-3.5-turbo"):
+    encoding = tiktoken.encoding_for_model(model)
+    return len(encoding.encode(text))
 
-- [ ] Comprender conceptos fundamentales
-- [ ] Implementar ejemplos básicos
-- [ ] Dominar casos de uso comunes
-- [ ] Aplicar mejores prácticas
-- [ ] Completar proyecto práctico
-- [ ] Optimizar para producción
-- [ ] Integrar con otros sistemas
-- [ ] Contribuir a comunidad
+# ✅ Secure API keys
+# Use environment variables
+import os
+openai.api_key = os.getenv("OPENAI_API_KEY")
+```
 
-## Próximos Pasos
+## Comparación
 
-1. Profundizar en temas relacionados
-2. Explorar casos de uso avanzados
-3. Construir portfolio
-4. Compartir conocimiento
+| Feature | OpenAI GPT-4 | Claude 3 Opus |
+|---------|--------------|---------------|
+| Context | 128K tokens | 200K tokens |
+| Razonamiento | Excelente | Excelente |
+| Velocidad | Medio | Medio |
+| Costo | $$$ | $$$ |
+| Function calling | Sí | Limitado |
+
+## Proyectos
+
+1. **AI Assistant**
+   - Function calling
+   - Multi-turn conversation
+   - Deploy FastAPI
+
+2. **Document Analysis**
+   - Claude para textos largos
+   - Summarization
+   - Q&A system
+
+3. **Semantic Search**
+   - OpenAI embeddings
+   - Vector DB
+   - Search interface
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2-3 semanas

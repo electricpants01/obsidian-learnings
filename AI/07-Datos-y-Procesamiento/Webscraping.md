@@ -2,97 +2,49 @@
 
 ## Descripción
 
-Web scraping extrae datos de sitios web para análisis y ML. Útil cuando no hay APIs disponibles. Requiere respetar robots.txt y términos de servicio.
+Web scraping extrae datos de websites para ML datasets. Libraries: BeautifulSoup (HTML parsing), Scrapy (framework completo), Selenium (JavaScript rendering), Requests (HTTP). Use cases: price monitoring, news aggregation, reviews sentiment, training data collection. Legal/ethical: respetar robots.txt, rate limiting, no sobrecargar servers. Alternativa: APIs cuando disponibles.
 
-## Conceptos Clave
+## Herramientas
 
-### 1. **Herramientas**
-- BeautifulSoup
-- Scrapy
-- Selenium
-- Requests
+**BeautifulSoup**: HTML parsing simple
+**Scrapy**: Production web crawling
+**Selenium**: JavaScript-heavy sites
+**Requests**: HTTP requests
 
-### 2. **Técnicas**
-- HTML parsing
-- CSS selectors
-- XPath
-- Dynamic content
-
-### 3. **Buenas Prácticas**
-- Rate limiting
-- User agents
-- robots.txt
-- Legal considerations
-
-### 4. **Anti-scraping**
-- CAPTCHA
-- IP blocking
-- Proxies
-- Rotating headers
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+## Ejemplo
 
 ```python
-# Implementación básica
-# Código funcional comentado
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
 
-# Caso de uso real
-# Mejores prácticas
+# Simple scraping
+url = "https://example.com/products"
+response = requests.get(url)
+soup = BeautifulSoup(response.content, 'html.parser')
 
-# Patrón avanzado
-# Optimizaciones
+products = []
+for item in soup.find_all('div', class_='product'):
+    name = item.find('h2').text
+    price = item.find('span', class_='price').text
+    products.append({'name': name, 'price': price})
+
+df = pd.DataFrame(products)
+
+# Scrapy spider
+import scrapy
+
+class ProductSpider(scrapy.Spider):
+    name = 'products'
+    start_urls = ['https://example.com/products']
+    
+    def parse(self, response):
+        for product in response.css('div.product'):
+            yield {
+                'name': product.css('h2::text').get(),
+                'price': product.css('span.price::text').get()
+            }
 ```
 
-## Mejores Prácticas
-
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
-
-## Proyectos Sugeridos
-
-1. **Scraper básico**
-2. **Dynamic content scraper**
-3. **Data pipeline**
-4. **News aggregator**
-5. **Price monitoring**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
-
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 1-2 semanas

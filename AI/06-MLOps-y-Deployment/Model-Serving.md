@@ -1,98 +1,53 @@
-# Model Serving - Serving de Modelos
+# Model Serving - Production Inference
 
 ## Descripción
 
-Model serving expone modelos de ML como servicios para inferencia. Incluye batch processing, real-time prediction y edge deployment.
+Model serving expone modelos para inference en producción. Opciones: REST API (FastAPI/Flask), gRPC (performance), batch (scheduled jobs), streaming (Kafka). Specialized frameworks: TensorFlow Serving, TorchServe, Triton Inference Server, BentoML. Optimization: quantization, ONNX export, model compression, caching. Scaling: load balancing, auto-scaling, GPU optimization. Edge deployment: TensorFlow Lite, ONNX Runtime Mobile. Critical: latency SLAs, throughput, cost optimization, versioning, A/B testing.
 
-## Conceptos Clave
+## Opciones
 
-### 1. **Estrategias**
-- REST API
-- gRPC
-- Streaming
-- Batch
+**TensorFlow Serving**: Production-ready, gRPC/REST
+**TorchServe**: PyTorch oficial
+**Triton**: NVIDIA, multi-framework
+**BentoML**: Python-friendly, containerization automática
+**Custom API**: FastAPI/Flask para flexibilidad
 
-### 2. **Frameworks**
-- TensorFlow Serving
-- TorchServe
-- Triton
-- BentoML
+## Ejemplo TorchServe
 
-### 3. **Optimización**
-- Model quantization
-- Batching
-- Caching
-- Hardware acceleration
+```bash
+# Package model
+torch-model-archiver --model-name resnet18 \
+  --version 1.0 \
+  --model-file model.py \
+  --serialized-file model.pth \
+  --handler image_classifier
 
-### 4. **Monitoring**
-- Latency
-- Throughput
-- Model drift
-- Data drift
+# Start server
+torchserve --start --model-store model_store --models resnet18=resnet18.mar
 
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
-
-```python
-# Implementación básica
-# Código funcional comentado
-
-# Caso de uso real
-# Mejores prácticas
-
-# Patrón avanzado
-# Optimizaciones
+# Inference
+curl -X POST http://localhost:8080/predictions/resnet18 -T image.jpg
 ```
 
-## Mejores Prácticas
+## BentoML Example
 
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
+```python
+import bentoml
+from bentoml.io import JSON
 
-## Proyectos Sugeridos
+@bentoml.service(name="iris_classifier")
+class IrisClassifier:
+    @bentoml.api
+    def predict(self, input_data: JSON) -> JSON:
+        model = bentoml.sklearn.load_model("iris_model:latest")
+        prediction = model.predict([input_data["features"]])
+        return {"class": int(prediction[0])}
 
-1. **REST API serving**
-2. **Batch inference**
-3. **Real-time predictions**
-4. **Edge deployment**
-5. **A/B testing**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
+# Build & serve
+bentoml build
+bentoml containerize iris_classifier:latest
+docker run -p 3000:3000 iris_classifier:latest
+```
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2-3 semanas

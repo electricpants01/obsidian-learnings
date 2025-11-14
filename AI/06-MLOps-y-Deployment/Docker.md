@@ -2,100 +2,93 @@
 
 ## Descripción
 
-Docker empaqueta aplicaciones con sus dependencias en containers portables. Es fundamental para deployment consistente de modelos de ML en producción.
+Docker containeriza aplicaciones para deployment consistente. Empaqueta código, dependencias, runtime en containers portables que corren igual en dev/prod. Ventajas vs VMs: lightweight (comparten OS kernel), start rápido (segundos), eficiente recursos. Conceptos: Images (template read-only), Containers (instancia running), Dockerfile (build instructions), Docker Hub (registry). Uso ML: reproducibilidad (freeze dependencies), aislamiento (sin conflictos), escalabilidad (orchestration con Kubernetes), CI/CD pipelines. Comandos críticos: `docker build`, `docker run`, `docker push/pull`. Multi-stage builds reducen tamaño. Docker Compose para multi-container. Essential para MLOps moderno.
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **Conceptos**
-- Images
-- Containers
-- Dockerfile
-- Volumes
-- Networks
+**Image**: Template con app + dependencies
+**Container**: Running instance de image
+**Dockerfile**: Build script
+**Registry**: Docker Hub, ECR, GCR para storage
+**Volumes**: Persist data
+**Networks**: Container communication
 
-### 2. **Comandos**
-- build
-- run
-- push
-- pull
-- exec
-- logs
+## Ejemplos
 
-### 3. **Best Practices**
-- Multi-stage builds
-- Layer caching
-- Small images
-- Security
+### Dockerfile para FastAPI ML App
 
-### 4. **ML Específico**
-- GPU support
-- Model serving
-- Dependencies
-- Monitoring
+```dockerfile
+# Multi-stage build
+FROM python:3.9-slim as builder
 
-## Recursos de Aprendizaje
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-### Documentación Oficial
-1. Documentación oficial y guías completas
-2. Tutoriales paso a paso
-3. Referencias API y ejemplos
+FROM python:3.9-slim
+WORKDIR /app
 
-### Cursos Online
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Tutoriales en video
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY . .
 
-### Libros y Papers
-1. Literatura fundamental del campo
-2. Casos de estudio reales
-3. Investigación reciente
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
 
-## Ejemplos Prácticos
+### Docker Compose
 
-```python
-# Ejemplo de implementación básica
-# Código comentado y funcional
+```yaml
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+    environment:
+      - MODEL_PATH=/app/models/model.pkl
+  
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+```
 
-# Caso de uso en producción
-# Mejores prácticas aplicadas
+### Comandos Básicos
 
-# Patrón avanzado optimizado
-# Integración con ecosistema
+```bash
+# Build image
+docker build -t ml-api:v1 .
+
+# Run container
+docker run -p 8000:8000 ml-api:v1
+
+# List containers
+docker ps
+
+# Stop container
+docker stop <container_id>
+
+# Push to registry
+docker tag ml-api:v1 username/ml-api:v1
+docker push username/ml-api:v1
+
+# Docker Compose
+docker-compose up -d
+docker-compose down
 ```
 
 ## Mejores Prácticas
 
-1. **Estándares**: Seguir convenciones de la industria
-2. **Testing**: Implementar pruebas exhaustivas
-3. **Documentación**: Mantener código bien documentado
-4. **Optimización**: Priorizar rendimiento
-5. **Mantenibilidad**: Código limpio y modular
-
-## Proyectos Sugeridos
-
-1. **Containerizar modelo ML**
-2. **Multi-stage build**
-3. **Docker Compose setup**
-4. **GPU container**
-5. **CI/CD pipeline**
-
-## Checklist de Aprendizaje
-
-- [ ] Comprender conceptos fundamentales
-- [ ] Implementar ejemplos básicos
-- [ ] Dominar casos de uso comunes
-- [ ] Aplicar mejores prácticas
-- [ ] Completar proyecto práctico
-- [ ] Optimizar para producción
-- [ ] Integrar con otros sistemas
-- [ ] Contribuir a comunidad
-
-## Próximos Pasos
-
-1. Profundizar en temas relacionados
-2. Explorar casos de uso avanzados
-3. Construir portfolio
-4. Compartir conocimiento
+```dockerfile
+# ✅ Use .dockerignore
+# ✅ Multi-stage builds
+# ✅ Minimize layers
+# ✅ Use official base images
+# ✅ Don't run as root
+# ❌ No guardar secrets en image
+```
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 1-2 semanas

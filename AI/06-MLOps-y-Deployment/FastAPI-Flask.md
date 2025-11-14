@@ -1,99 +1,85 @@
-# FastAPI y Flask - APIs para ML
+# FastAPI y Flask - Web Frameworks para ML APIs
 
 ## Descripción
 
-FastAPI y Flask crean APIs REST para servir modelos de ML. FastAPI es moderno y rápido, Flask es simple y maduro. Ambos son populares para deployment.
+FastAPI y Flask son frameworks Python para crear APIs web, críticos para serving ML models. FastAPI: moderno, async, auto-documentation (OpenAPI), type hints, rápido (comparable a Node.js). Flask: maduro, simple, flexible, gran ecosistema. ML use cases: model serving, batch predictions, webhooks. FastAPI preferido para nuevos proyectos (performance, async, validación automática). Flask para sistemas legacy o simplicidad. Ambos integran fácil con scikit-learn, PyTorch, TensorFlow. Deployment: Docker + Gunicorn/Uvicorn. Testing con pytest. Authentication (JWT), CORS, rate limiting críticos producción.
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **FastAPI**
-- Type hints
-- Auto docs
-- Async
-- Pydantic
-- Performance
+**Endpoints**: Routes para requests
+**Pydantic**: Data validation (FastAPI)
+**Async**: Concurrency mejorada
+**Middleware**: Pre/post processing
+**Dependencies**: Injection pattern
 
-### 2. **Flask**
-- Lightweight
-- Extensions
-- Templates
-- Mature ecosystem
+## Ejemplos
 
-### 3. **ML Serving**
-- Model loading
-- Request validation
-- Error handling
-- Monitoring
-
-### 4. **Deployment**
-- Docker
-- Gunicorn/Uvicorn
-- Load balancing
-- Health checks
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+### FastAPI ML API
 
 ```python
-# Implementación básica
-# Código funcional comentado
+from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib
 
-# Caso de uso real
-# Mejores prácticas
+app = FastAPI()
+model = joblib.load('model.pkl')
 
-# Patrón avanzado
-# Optimizaciones
+class PredictionInput(BaseModel):
+    features: list[float]
+
+class PredictionOutput(BaseModel):
+    prediction: float
+
+@app.post("/predict", response_model=PredictionOutput)
+async def predict(input_data: PredictionInput):
+    prediction = model.predict([input_data.features])[0]
+    return {"prediction": prediction}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 ```
 
-## Mejores Prácticas
+### Flask ML API
 
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
+```python
+from flask import Flask, request, jsonify
+import joblib
 
-## Proyectos Sugeridos
+app = Flask(__name__)
+model = joblib.load('model.pkl')
 
-1. **API para predicciones**
-2. **Batch endpoint**
-3. **Streaming predictions**
-4. **Multi-model serving**
-5. **Production deployment**
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    prediction = model.predict([data['features']])[0]
+    return jsonify({'prediction': float(prediction)})
 
-## Checklist de Aprendizaje
+@app.route('/health')
+def health():
+    return jsonify({'status': 'healthy'})
 
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
+```
 
-## Próximos Pasos
+### Testing
 
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
+```python
+from fastapi.testclient import TestClient
+
+client = TestClient(app)
+
+def test_predict():
+    response = client.post("/predict", json={"features": [1.0, 2.0, 3.0]})
+    assert response.status_code == 200
+    assert "prediction" in response.json()
+```
+
+## Recursos
+
+**FastAPI**: https://fastapi.tiangolo.com/
+**Flask**: https://flask.palletsprojects.com/
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2 semanas

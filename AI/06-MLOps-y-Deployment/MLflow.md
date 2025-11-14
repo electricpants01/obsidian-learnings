@@ -1,98 +1,55 @@
-# MLflow - Experiment Tracking
+# MLflow - Experiment Tracking & Model Management
 
 ## Descripción
 
-MLflow gestiona el ciclo de vida de ML: tracking de experimentos, reproducibilidad, deployment y modelo registry. Es esencial para equipos de ML.
+MLflow gestiona el ciclo de vida ML: tracking experiments, reproducibility, model registry, deployment. Componentes: Tracking (log params/metrics), Projects (formato reproducible), Models (packaging estándar), Registry (versionado centralizado). Benefits: comparar experiments, reproducir runs, deploy modelos, colaboración equipo. Integra con PyTorch, TensorFlow, scikit-learn, Keras. UI web para visualizar. Critical para MLOps: sin tracking manual, versionado automático, roll-back fácil. Alternatives: Weights & Biases, Neptune, ClearML. Open-source con version enterprise.
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **Components**
-- Tracking
-- Projects
-- Models
-- Registry
+**Experiment**: Agrupa runs relacionados
+**Run**: Ejecución única con params/metrics  
+**Model Registry**: Versionado centralizado
+**Artifacts**: Outputs (models, plots)
+**Autologging**: Logging automático
 
-### 2. **Tracking**
-- Metrics
-- Parameters
-- Artifacts
-- UI
-
-### 3. **Registry**
-- Model versioning
-- Staging
-- Production
-- Lineage
-
-### 4. **Deployment**
-- REST API
-- Batch inference
-- Real-time serving
-- Cloud integration
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+## Ejemplos
 
 ```python
-# Implementación básica
-# Código funcional comentado
+import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
 
-# Caso de uso real
-# Mejores prácticas
+# Start run
+with mlflow.start_run():
+    # Log params
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_param("max_depth", 10)
+    
+    # Train model
+    model = RandomForestClassifier(n_estimators=100, max_depth=10)
+    model.fit(X_train, y_train)
+    
+    # Log metrics
+    accuracy = model.score(X_test, y_test)
+    mlflow.log_metric("accuracy", accuracy)
+    
+    # Log model
+    mlflow.sklearn.log_model(model, "model")
 
-# Patrón avanzado
-# Optimizaciones
+# Autologging
+mlflow.sklearn.autolog()
+model.fit(X_train, y_train)  # Auto logs todo
+
+# Load model
+model = mlflow.sklearn.load_model("runs:/<run_id>/model")
+
+# Model Registry
+mlflow.register_model("runs:/<run_id>/model", "MyModel")
 ```
 
-## Mejores Prácticas
+## Recursos
 
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
-
-## Proyectos Sugeridos
-
-1. **Track experimentos**
-2. **Model registry**
-3. **Comparar runs**
-4. **Deploy modelo**
-5. **CI/CD pipeline**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
+**Docs**: https://mlflow.org/docs/latest/index.html
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2 semanas

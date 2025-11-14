@@ -1,96 +1,33 @@
-# Data Cleaning - Limpieza de Datos
+# Data Cleaning - Preparación de Datos
 
 ## Descripción
 
-La limpieza de datos es crucial para ML exitoso. Incluye manejar missing values, outliers, duplicados y inconsistencias que afectan la calidad del modelo.
+Data cleaning es 80% del trabajo ML: manejar missing values, outliers, duplicates, inconsistencies. Técnicas: imputation (mean/median/mode, KNN), outlier detection (IQR, Z-score, isolation forest), deduplication, normalization. Libraries: Pandas, NumPy. Critical: domain knowledge, no eliminar información valiosa, documentar decisiones, mantener raw data separado.
 
-## Conceptos Clave
-
-### 1. **Missing Data**
-- Detection
-- Imputation
-- Deletion
-- MICE
-
-### 2. **Outliers**
-- Detection methods
-- Treatment
-- Robust statistics
-
-### 3. **Duplicados**
-- Exact duplicates
-- Fuzzy matching
-- Deduplication
-
-### 4. **Validación**
-- Data types
-- Ranges
-- Constraints
-- Business rules
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+## Técnicas
 
 ```python
-# Implementación básica
-# Código funcional comentado
+import pandas as pd
+import numpy as np
 
-# Caso de uso real
-# Mejores prácticas
+# Missing values
+df['age'].fillna(df['age'].median(), inplace=True)
+df.dropna(subset=['critical_col'], inplace=True)
 
-# Patrón avanzado
-# Optimizaciones
+# Outliers (IQR method)
+Q1 = df['value'].quantile(0.25)
+Q3 = df['value'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[(df['value'] >= Q1 - 1.5*IQR) & (df['value'] <= Q3 + 1.5*IQR)]
+
+# Duplicates
+df.drop_duplicates(subset=['id'], inplace=True)
+
+# Normalization
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+df[['feature1', 'feature2']] = scaler.fit_transform(df[['feature1', 'feature2']])
 ```
 
-## Mejores Prácticas
-
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
-
-## Proyectos Sugeridos
-
-1. **Automated cleaning pipeline**
-2. **Outlier detection**
-3. **Missing data imputation**
-4. **Data validation framework**
-5. **Quality report**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
-
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2 semanas

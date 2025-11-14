@@ -2,98 +2,41 @@
 
 ## Descripción
 
-ETL (Extract, Transform, Load) y ELT son procesos para mover y transformar datos. Son fundamentales para preparar datos para análisis y ML.
+ETL (Extract-Transform-Load) y ELT (Extract-Load-Transform) construyen data pipelines. ETL: transform antes de load (traditional data warehouses). ELT: load raw data primero, transform después (modern data lakes, BigQuery). Tools: Airflow (orchestration), dbt (transformations), Fivetran/Airbyte (ingestion). ML pipelines: feature extraction, data validation, incremental updates. Critical: idempotency, monitoring, error handling, scheduling.
 
-## Conceptos Clave
+## Tools
 
-### 1. **Extract**
-- APIs
-- Databases
-- Files
-- Streaming
-- Web scraping
+**Airflow**: Workflow orchestration, Python DAGs
+**dbt**: SQL transformations, version control
+**Prefect/Dagster**: Modern alternatives
+**Fivetran**: Managed connectors
 
-### 2. **Transform**
-- Cleaning
-- Validation
-- Enrichment
-- Aggregation
-
-### 3. **Load**
-- Data warehouses
-- Data lakes
-- Databases
-- Cloud storage
-
-### 4. **Orchestration**
-- Airflow
-- Prefect
-- Dagster
-- Scheduling
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+## Airflow Example
 
 ```python
-# Implementación básica
-# Código funcional comentado
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
 
-# Caso de uso real
-# Mejores prácticas
+def extract():
+    # Extract data
+    pass
 
-# Patrón avanzado
-# Optimizaciones
+def transform():
+    # Transform data
+    pass
+
+def load():
+    # Load to warehouse
+    pass
+
+with DAG('ml_pipeline', start_date=datetime(2024, 1, 1), schedule='@daily') as dag:
+    extract_task = PythonOperator(task_id='extract', python_callable=extract)
+    transform_task = PythonOperator(task_id='transform', python_callable=transform)
+    load_task = PythonOperator(task_id='load', python_callable=load)
+    
+    extract_task >> transform_task >> load_task
 ```
 
-## Mejores Prácticas
-
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
-
-## Proyectos Sugeridos
-
-1. **ETL pipeline**
-2. **Data warehouse**
-3. **Real-time pipeline**
-4. **Data quality checks**
-5. **Incremental loading**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
-
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2-3 semanas

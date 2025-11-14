@@ -1,99 +1,36 @@
-# Cloud Platforms para ML
+# Cloud Platforms - AWS, GCP, Azure
 
 ## Descripción
 
-AWS, GCP y Azure ofrecen servicios managed para ML: training, deployment, auto-scaling. Permiten escalar proyectos sin gestionar infraestructura.
+Cloud providers ofrecen infraestructura ML escalable: compute (EC2, Compute Engine, VMs), storage (S3, GCS, Blob), managed ML (SageMaker, Vertex AI, Azure ML). Benefits: pay-as-you-go, auto-scaling, managed services, global infrastructure. ML services: training (GPUs/TPUs), inference endpoints, AutoML, notebooks (SageMaker Studio, Vertex AI Workbench). Data services: warehouses (BigQuery, Redshift), lakes (S3+Glue, GCS+Dataflow). IAM crítico para security. Cost optimization: spot instances, reserved capacity, rightsizing.
 
-## Conceptos Clave
+## Servicios ML
 
-### 1. **AWS**
-- SageMaker
-- EC2
-- Lambda
-- S3
-- ECR
+**AWS**: SageMaker (end-to-end ML), EC2 (flexible compute), Lambda (serverless)
+**GCP**: Vertex AI (unified ML), AI Platform, BigQuery ML
+**Azure**: Azure ML, Databricks, Synapse Analytics
 
-### 2. **GCP**
-- Vertex AI
-- Compute Engine
-- Cloud Functions
-- GCS
-
-### 3. **Azure**
-- Azure ML
-- VMs
-- Functions
-- Blob Storage
-
-### 4. **Servicios**
-- Managed training
-- Endpoints
-- Pipelines
-- Monitoring
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+## Ejemplo SageMaker
 
 ```python
-# Implementación básica
-# Código funcional comentado
+import sagemaker
+from sagemaker.sklearn import SKLearn
 
-# Caso de uso real
-# Mejores prácticas
+# Training
+sklearn_estimator = SKLearn(
+    entry_point='train.py',
+    role=role,
+    instance_type='ml.m5.xlarge',
+    framework_version='0.23-1'
+)
+sklearn_estimator.fit({'train': 's3://bucket/data'})
 
-# Patrón avanzado
-# Optimizaciones
+# Deploy
+predictor = sklearn_estimator.deploy(
+    initial_instance_count=1,
+    instance_type='ml.m5.large'
+)
 ```
 
-## Mejores Prácticas
-
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
-
-## Proyectos Sugeridos
-
-1. **Deploy en SageMaker**
-2. **Training job en cloud**
-3. **Serverless inference**
-4. **Multi-cloud strategy**
-5. **Cost optimization**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
-
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 3-4 semanas

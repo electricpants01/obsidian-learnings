@@ -1,100 +1,66 @@
-# SQL - Bases de Datos Relacionales
+# SQL - Structured Query Language
 
 ## Descripción
 
-SQL es esencial para trabajar con datos estructurados. Permite consultar, filtrar, agregar y unir datos almacenados en bases de datos relacionales.
+SQL es fundamental para data engineering y ML: extraer datos, transformaciones, feature engineering, análisis exploratorio. Databases relacionales: PostgreSQL, MySQL, SQL Server. Data warehouses: BigQuery, Redshift, Snowflake. Operaciones críticas: SELECT (queries), JOIN (combinar tables), GROUP BY (agregaciones), window functions, CTEs. ML use: preparar training data, feature extraction, data validation. ORMs (SQLAlchemy) para Python integration. Query optimization crítica para grandes datasets.
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **Consultas**
-- SELECT
-- WHERE
-- GROUP BY
-- JOIN
-- HAVING
+**SELECT**: Retrieve data
+**JOIN**: Combine tables (INNER, LEFT, RIGHT, FULL)
+**GROUP BY**: Aggregations
+**Window Functions**: Analytic queries
+**CTEs**: Common Table Expressions
+**Indexes**: Performance optimization
 
-### 2. **Operaciones**
-- INSERT
-- UPDATE
-- DELETE
-- CREATE
-- INDEX
+## Ejemplos
 
-### 3. **Funciones**
-- Agregaciones
-- Window functions
-- CTEs
-- Subqueries
+```sql
+-- Basic query
+SELECT customer_id, SUM(amount) as total_spent
+FROM orders
+WHERE order_date >= '2024-01-01'
+GROUP BY customer_id
+HAVING SUM(amount) > 1000;
 
-### 4. **Optimización**
-- Indexes
-- Query plans
-- Normalization
-- Partitioning
+-- JOIN
+SELECT o.order_id, c.name, p.product_name
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+JOIN products p ON o.product_id = p.id;
 
-## Recursos de Aprendizaje
+-- Window function
+SELECT 
+    customer_id,
+    order_date,
+    amount,
+    SUM(amount) OVER (PARTITION BY customer_id ORDER BY order_date) as running_total
+FROM orders;
 
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
-
-```python
-# Implementación básica
-# Código funcional comentado
-
-# Caso de uso real
-# Mejores prácticas
-
-# Patrón avanzado
-# Optimizaciones
+-- CTE
+WITH high_value_customers AS (
+    SELECT customer_id, SUM(amount) as total
+    FROM orders
+    GROUP BY customer_id
+    HAVING SUM(amount) > 10000
+)
+SELECT * FROM high_value_customers;
 ```
 
-## Mejores Prácticas
+## Python Integration
 
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
+```python
+import pandas as pd
+from sqlalchemy import create_engine
 
-## Proyectos Sugeridos
+engine = create_engine('postgresql://user:pass@localhost/dbname')
 
-1. **Análisis exploratorio**
-2. **ETL queries**
-3. **Feature engineering**
-4. **Data aggregation**
-5. **Join optimization**
+# Query to DataFrame
+df = pd.read_sql("SELECT * FROM customers WHERE active = true", engine)
 
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
+# Write DataFrame to SQL
+df.to_sql('predictions', engine, if_exists='append', index=False)
+```
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2-3 semanas

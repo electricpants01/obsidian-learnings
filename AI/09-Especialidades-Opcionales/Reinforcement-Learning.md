@@ -1,103 +1,15 @@
-# Reinforcement Learning
+# Reinforcement Learning - Aprendizaje por Refuerzo
 
 ## Descripción
+RL entrena agentes mediante recompensas: agent interactúa con environment, aprende policy óptima. Algoritmos: Q-learning, DQN, PPO, A3C. Casos: games (AlphaGo), robotics, recommendation systems, autonomous vehicles. Libraries: Gym, Stable-Baselines3, Ray RLlib.
 
-RL entrena agentes que aprenden a tomar decisiones mediante interacción con un environment. Usado en juegos, robótica y optimización.
-
-## Conceptos Clave
-
-### 1. **Conceptos**
-- Agent
-- Environment
-- State
-- Action
-- Reward
-- Policy
-
-### 2. **Algoritmos**
-- Q-Learning
-- DQN
-- Policy Gradient
-- A3C
-- PPO
-- SAC
-
-### 3. **Frameworks**
-- OpenAI Gym
-- Stable Baselines3
-- RLlib
-- TF-Agents
-
-### 4. **Aplicaciones**
-- Game playing
-- Robotics
-- Recommendation
-- Trading
-- Resource management
-
-## Recursos de Aprendizaje
-
-### Documentación y Tutoriales
-1. Documentación oficial completa
-2. Tutoriales interactivos
-3. Guías y ejemplos prácticos
-
-### Cursos y Certificaciones
-1. Cursos especializados online
-2. Certificaciones profesionales
-3. Workshops y bootcamps
-
-### Libros y Comunidad
-1. Literatura fundamental
-2. Casos de estudio
-3. Comunidades y foros
-
-## Ejemplos Prácticos
-
+## Ejemplo
 ```python
-# Implementación básica
-# Código funcional y comentado
-
-# Caso de uso real en producción
-# Mejores prácticas aplicadas
-
-# Patrón avanzado optimizado
-# Integración con ecosistema
+import gym
+from stable_baselines3 import PPO
+env = gym.make('CartPole-v1')
+model = PPO('MlpPolicy', env, verbose=1)
+model.learn(total_timesteps=10000)
 ```
-
-## Mejores Prácticas
-
-1. **Estándares**: Seguir convenciones de la industria
-2. **Testing**: Implementar pruebas exhaustivas
-3. **Documentación**: Mantener código documentado
-4. **Calidad**: Priorizar código limpio
-5. **Escalabilidad**: Diseñar para crecer
-
-## Proyectos Sugeridos
-
-1. **CartPole agent**
-2. **Atari game**
-3. **Custom environment**
-4. **Multi-agent system**
-5. **Real-world optimization**
-
-## Checklist de Aprendizaje
-
-- [ ] Comprender conceptos fundamentales
-- [ ] Implementar ejemplos básicos
-- [ ] Dominar casos de uso comunes
-- [ ] Aplicar mejores prácticas
-- [ ] Completar proyecto práctico
-- [ ] Optimizar para producción
-- [ ] Integrar con otros sistemas
-- [ ] Contribuir a la comunidad
-
-## Próximos Pasos
-
-1. Profundizar en temas avanzados
-2. Explorar casos de uso especializados
-3. Construir portfolio de proyectos
-4. Compartir conocimiento y enseñar
-
 ---
-**Tiempo estimado de estudio**: 2-4 semanas
+**Tiempo**: 4-6 semanas

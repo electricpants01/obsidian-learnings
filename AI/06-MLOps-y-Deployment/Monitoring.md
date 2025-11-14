@@ -1,98 +1,53 @@
-# Monitoring de Modelos en Producción
+# Monitoring - Model & System Observability
 
 ## Descripción
 
-El monitoring detecta model drift, data drift y degradación de performance. Es crítico para mantener modelos saludables en producción.
+Monitoring detecta model drift, performance degradation, system issues post-deployment. Métricas ML: accuracy, precision, recall, latency, throughput. Infrastructure: CPU/GPU, memory, disk. Data drift: distribución input changes. Concept drift: relación X-y changes. Tools: Prometheus+Grafana (metrics), ELK stack (logs), Evidently AI, Whylabs (ML-specific). Alerting crítico: performance drops, high latency, errors. Dashboards para business stakeholders. Retraining triggers cuando drift detectado.
 
-## Conceptos Clave
+## Conceptos
 
-### 1. **Métricas**
-- Model performance
-- Latency
-- Throughput
-- Errors
+**Data Drift**: Input distribution changes
+**Concept Drift**: Target relationship changes
+**Performance Metrics**: Accuracy, latency
+**Logging**: Request/response tracking
+**Alerts**: Automated notifications
 
-### 2. **Drift Detection**
-- Data drift
-- Concept drift
-- Feature drift
-- Label drift
-
-### 3. **Herramientas**
-- Prometheus
-- Grafana
-- Evidently AI
-- WhyLabs
-
-### 4. **Alerting**
-- Thresholds
-- Anomalies
-- Notifications
-- Auto-retraining
-
-## Recursos de Aprendizaje
-
-### Documentación Oficial
-1. Documentación oficial completa
-2. Tutoriales paso a paso
-3. Referencias y ejemplos
-
-### Cursos y Certificaciones
-1. Cursos especializados
-2. Certificaciones profesionales
-3. Workshops prácticos
-
-### Libros y Comunidad
-1. Literatura del campo
-2. Casos de estudio
-3. Comunidades activas
-
-## Ejemplos Prácticos
+## Ejemplo Prometheus + Grafana
 
 ```python
-# Implementación básica
-# Código funcional comentado
+from prometheus_client import Counter, Histogram, start_http_server
+import time
 
-# Caso de uso real
-# Mejores prácticas
+# Metrics
+prediction_counter = Counter('predictions_total', 'Total predictions')
+prediction_latency = Histogram('prediction_latency_seconds', 'Prediction latency')
 
-# Patrón avanzado
-# Optimizaciones
+@app.post("/predict")
+async def predict(data: InputData):
+    start = time.time()
+    
+    result = model.predict(data.features)
+    
+    # Track metrics
+    prediction_counter.inc()
+    prediction_latency.observe(time.time() - start)
+    
+    return {"prediction": result}
+
+# Start metrics server
+start_http_server(8001)
 ```
 
-## Mejores Prácticas
+## Drift Detection
 
-1. **Estándares**: Seguir convenciones
-2. **Testing**: Pruebas exhaustivas
-3. **Documentación**: Código bien documentado
-4. **Seguridad**: Prácticas seguras
-5. **Escalabilidad**: Diseño escalable
+```python
+from evidently.metric_preset import DataDriftPreset
+from evidently.report import Report
 
-## Proyectos Sugeridos
-
-1. **Dashboard de métricas**
-2. **Drift detection**
-3. **Alert system**
-4. **Auto-retraining pipeline**
-5. **Performance tracking**
-
-## Checklist de Aprendizaje
-
-- [ ] Conceptos fundamentales
-- [ ] Ejemplos básicos
-- [ ] Casos de uso reales
-- [ ] Mejores prácticas
-- [ ] Proyecto completo
-- [ ] Optimización
-- [ ] Integración
-- [ ] Documentación
-
-## Próximos Pasos
-
-1. Temas avanzados relacionados
-2. Casos de uso especializados
-3. Proyectos de portfolio
-4. Contribución open source
+report = Report(metrics=[DataDriftPreset()])
+report.run(reference_data=train_df, current_data=production_df)
+report.save_html("drift_report.html")
+```
 
 ---
-**Tiempo estimado**: 2-4 semanas
+**Tiempo**: 2 semanas
