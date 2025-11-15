@@ -197,4 +197,3 @@ La carpeta [jetcaster/](jetcaster/) contiene análisis detallado de la arquitect
 ---
 
 *Última actualización: Noviembre 2024*
-
